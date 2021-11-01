@@ -1,4 +1,4 @@
-package br.dev.jfr.reactorlearn;
+package com.example.stresscancel;
 
 import io.r2dbc.pool.ConnectionPool;
 import io.r2dbc.pool.ConnectionPoolConfiguration;
