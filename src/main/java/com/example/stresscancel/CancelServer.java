@@ -9,6 +9,7 @@ import io.r2dbc.spi.ConnectionFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
+import reactor.netty.http.client.HttpClient;
 import reactor.netty.http.server.HttpServer;
 import reactor.util.Logger;
 import reactor.util.Loggers;
@@ -33,34 +34,39 @@ public class CancelServer {
                 .port(8080)
                 .route(routes ->
                     routes
-                        .get("/hello",
-                                (request, response) -> response.sendString(helloMono()))
+                        .get("/health",
+                                (request, response) -> response.sendString(health()))
                         .get("/cancel/{param}",
                                 (request, response) ->
-                                        response.sendString(cancelRequest(pool, request.param("param")))
-                        )
+                                    response.sendString(
+                                        cancelRequest(pool, request.param("param"))
+                                            .doOnSubscribe(s -> log.info("ENTER: {}", request.param("param")))
+                                            .doOnTerminate(() -> log.info("EXIT: {}", request.param("param")))
+                                    ))
                 )
                 .bindNow();
 
         server.onDispose()
                 .block();
+
     }
 
     private static Mono<String> cancelRequest(ConnectionFactory factory,
                                               String val) {
+        final String request = "request-" + val;
         return
                 Flux
                         .usingWhen(factory.create(),
-                                c -> c.createStatement("select pg_sleep(0.2) sleep, '" + val.toString() + "' as status").execute(),
+                                c -> c.createStatement("select '" + request + "' as request , pg_sleep(0.2) sleep").execute(),
                                 Connection::close)
-                        .flatMap(it -> it.map((r, m) -> r.get(1, String.class)))
+                        .flatMap(it -> it.map((r, m) -> r.get(0, String.class)))
                         .next()
                         .doOnNext(s -> log.info("onNext query {}", s))
-                        .doOnCancel(() -> log.info("CANCEL query "));
+                        .doOnCancel(() -> log.info("CANCEL query {}", val));
     }
 
-    private static Mono<String> helloMono() {
-        return Mono.just("Hello World!");
+    private static Mono<String> health() {
+        return Mono.just("on air");
     }
 
     private static ConnectionFactory createPoll() {
@@ -70,7 +76,7 @@ public class CancelServer {
         final String port = "5432";
         final String database = "postgres";
         final String connectionTimeout = "15000";
-        final String applicationName = "sample";
+        final String applicationName = "stressCancel";
 
         // Pool
         final String initialSize = "1";
@@ -108,7 +114,7 @@ public class CancelServer {
                         .maxSize(Integer.parseInt(maxSize))
                         .acquireRetry(3)
                         .maxLifeTime(Duration.ofMillis(Long.parseLong(maxLifetime)))
-                        .validationQuery("SELECT 1")
+                        //.validationQuery("SELECT 1")
                         .build());
     }
 }
