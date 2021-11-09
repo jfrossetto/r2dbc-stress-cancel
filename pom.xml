@@ -52,16 +52,23 @@
 			<version>2.13.3</version>
 		</dependency>
 
+		<dependency>
+			<groupId>io.projectreactor.addons</groupId>
+			<artifactId>reactor-pool</artifactId>
+			<version>0.1.15.BUILD-SNAPSHOT</version>
+		</dependency>
+
 		<!-- r2dbc -->
 		<dependency>
 			<groupId>io.r2dbc</groupId>
 			<artifactId>r2dbc-pool</artifactId>
-			<version>0.8.8.BUILD-SNAPSHOT</version>
+			<version>0.8.8.CUSTOM</version>
 		</dependency>
 		<dependency>
 			<groupId>io.r2dbc</groupId>
 			<artifactId>r2dbc-postgresql</artifactId>
-			<version>0.8.8.RELEASE</version>
+			<!--<version>0.8.11.BUILD-SNAPSHOT</version>-->
+			<version>0.8.10.CUSTOM</version>
 		</dependency>
 		<dependency>
 			<groupId>io.r2dbc</groupId>

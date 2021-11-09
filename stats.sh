@@ -1,0 +1,31 @@
+grep -i "enter" log.txt | wc | awk '{print "app enter request  : " $1}'
+grep -i "cancel query" log.txt | wc | awk '{print "app cancel request   : " $1}'
+grep -i "Obtaining new connection from the pool" log.txt | wc | awk '{print "r2dbc-pool Obtaining new connection from the pool   : " $1}'
+grep -i "DELIVER" log.txt | wc | awk '{print "reactor-pool deliver poolslot   : " $1}'
+grep -i "cancel deliver" log.txt | wc | awk '{print "reactor-pool cancel deliver   : " $1}'
+grep -i "aquired" log.txt | wc | awk '{print "r2dbc-pool aquired   : " $1}'
+grep -i "getConnection" log.txt | wc | awk '{print "app usingWhen getConnection   : " $1}'
+grep -i "Releasing connection PostgresqlConnection" log.txt | wc | awk '{print "r2dbc-pool Releasing connection on close Connection   : " $1}'
+grep -i "Releasing connection after cancellation" log.txt | wc | awk '{print "r2dbc-pool Releasing connection after cancellation   : " $1}'
+grep -i "Request Release" log.txt | wc | awk '{print "reactor-pool Request Release   : " $1}'
+#grep -i "onComplete Release" log.txt | wc | awk '{print "onComplete Release   : " $1}'
+#grep -i "dofinally conn" log.txt | wc | awk '{print "r2dbc-pool dofinally conn   : " $1}'
+#grep -i "discard conn" log.txt | wc | awk '{print "r2dbc-pool discard conn   : " $1}'
+grep -i "cleanup" log.txt | wc | awk '{print "r2dbc-pool cleanup   : " $1}'
+grep -i "received cancel signal" log.txt | wc | awk '{print "r2dbc-pool received cancel signal   : " $1}'
+grep -i "upstream cancel" log.txt | wc | awk '{print "r2dbc-pool upstream cancel   : " $1}'
+grep -i "CANCEL ACQUIRE" log.txt | wc | awk '{print "reactor-pool CANCEL ACQUIRE   : " $1}'
+#grep -i "CANCEL DURING QueuePoolRecyclerInner" log.txt | wc | awk '{print "reactor-pool CANCEL on QueuePoolRecyclerInner   : " $1}'
+#grep -i "doFinally acquire" log.txt | wc | awk '{print "r2dbc-pool doFinally acquire   : " $1}'
+#grep -i "r2dbc-pool onnext" log.txt | wc | awk '{print "r2dbc-pool onnext   : " $1}'
+
+
+
+
+#grep -i "error usingWhen" log.txt | wc | awk '{print "app usingWhen error   : " $1}'
+#grep -i "cancel usingWhen" log.txt | wc | awk '{print "app usingWhen cancel   : " $1}'
+#grep -i "Error during release" log.txt | wc | awk '{print "Error during release   : " $1}'
+#grep -i "cancel on Releasing connection" log.txt | wc | awk '{print "cancel on Releasing connection   : " $1}'
+#grep -i "r2dbc-postgresql - cancel" log.txt | wc | awk '{print "r2dbc-postgresql - cancel   : " $1}'
+#grep -i "r2dbc-postgresql - createStatement" log.txt | wc | awk '{print "r2dbc-postgresql - createStatement   : " $1}'
+

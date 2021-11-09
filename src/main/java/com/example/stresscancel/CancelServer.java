@@ -9,7 +9,6 @@ import io.r2dbc.spi.ConnectionFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
-import reactor.netty.http.client.HttpClient;
 import reactor.netty.http.server.HttpServer;
 import reactor.util.Logger;
 import reactor.util.Loggers;
@@ -54,15 +53,23 @@ public class CancelServer {
     private static Mono<String> cancelRequest(ConnectionFactory factory,
                                               String val) {
         final String request = "request-" + val;
-        return
+        final String sleep = val.contains("complete") ? ", pg_sleep(0.02) sleep" : ", pg_sleep(0.2) sleep";
+        final Mono<String> stringMono =
                 Flux
-                        .usingWhen(factory.create(),
-                                c -> c.createStatement("select '" + request + "' as request , pg_sleep(0.2) sleep").execute(),
-                                Connection::close)
-                        .flatMap(it -> it.map((r, m) -> r.get(0, String.class)))
-                        .next()
-                        .doOnNext(s -> log.info("onNext query {}", s))
-                        .doOnCancel(() -> log.info("CANCEL query {}", val));
+                .usingWhen(factory.create(),
+                        c -> {
+                            log.info("getConnection");
+                            //c.beginTransaction();
+                            return c.createStatement("select '" + request + "' as request " + sleep).execute();
+                        },
+                        Connection::close
+                )
+                .flatMap(it -> it.map((r, m) -> r.get(0, String.class)))
+                .next()
+                .doOnNext(s -> log.info("onNext query {}", s))
+                .doOnCancel(() -> log.info("CANCEL query {}", val));
+
+        return stringMono;
     }
 
     private static Mono<String> health() {

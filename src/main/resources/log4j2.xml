@@ -11,7 +11,9 @@
         </Root>
         <Logger name="io.r2dbc.pool" level="debug">
         </Logger>
-        <Logger name="io.r2dbc.postgresql" level="debug">
+        <Logger name="reactor.pool" level="debug">
+        </Logger>
+        <Logger name="io.r2dbc.postgresql" level="warn">
         </Logger>
     </Loggers>
 </Configuration>
